@@ -81,7 +81,8 @@ def split_sub(text: str, max_len: int, keep: str = None) -> list:
 
 def add_hua(project, text, highlights, start, end, size, y):
     # 统一字号：去掉 highlight 里的 size 覆盖，避免同一行文字大小不一/变形
-    hl = [{k: v for k, v in h.items() if k != "size"} for h in highlights]
+    # 全句先铺一层基础金色样式，未高亮文字才不会丢失样式/撑大换行
+    hl = [{"word": text, "color": GOLD}] + [{k: v for k, v in h.items() if k != "size"} for h in highlights]
     seg = project.add_rich_text(
         text, highlights=hl,
         start_time=us(start), duration=us(end - start), track_name="HuaZi",
