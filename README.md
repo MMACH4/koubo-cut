@@ -11,7 +11,7 @@
 
 ```bash
 python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
-  --repo MMACH4/koubo-cut
+  --repo MMACH4/koubo-cut --path . --name koubo-cut
 ```
 
 同时需要安装依赖技能 [jianying-editor](https://github.com/luoluoluo22/jianying-editor-skill)。
