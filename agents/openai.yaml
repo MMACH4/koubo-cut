@@ -1,0 +1,4 @@
+interface:
+  display_name: "口播视频剪辑"
+  short_description: "口播视频精剪+剪映包装：压缩1080P、按密度做字幕/花字/标题/音效、生成分段工程"
+  default_prompt: "用 koubo-cut 剪辑这条口播视频：视频路径"
