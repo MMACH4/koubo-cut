@@ -126,7 +126,8 @@ def main() -> int:
     project = JyProject(plan["name"], width=w, height=h, overwrite=True)
     assets_dir = os.path.join(project.draft_dir, "素材")
     os.makedirs(assets_dir, exist_ok=True)
-    shutil.copy(plan["video"], os.path.join(assets_dir, os.path.basename(plan["video"])))
+    video_local = os.path.join(assets_dir, os.path.basename(plan["video"]))
+    shutil.copy(plan["video"], video_local)
 
     # 音效
     sfx_dir = plan.get("sfx_dir") or os.path.expanduser("~/.cache/koubo/sfx")
@@ -147,7 +148,7 @@ def main() -> int:
     for s in segs:
         dur = s["end"] - s["src"]
         seg = project.add_media_safe(
-            plan["video"], start_time=us(t), duration=us(dur),
+            video_local, start_time=us(t), duration=us(dur),
             track_name="VideoTrack", source_start=us(s["src"]),
         )
         if seg is not None:
