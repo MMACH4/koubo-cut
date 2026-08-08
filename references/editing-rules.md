@@ -44,7 +44,14 @@
 - 无角标（不加水印 logo）。
 - 命名：核心信息 ≤5 字 + `-cut`（如 `2万打卡-cut`）。
 
-## 五、依赖与环境
+## 五、素材预处理（必做）
+
+- 用户上传的原片，剪辑前先压缩到统一 1080P：横 1920×1080 / 竖 1080×1920。
+- 压缩参数：libx264 preset faster、crf 20、保持帧率；压缩文件另存（不覆盖原片）。
+- ⚠️ 剪映不支持 HEVC（H.265 Main 10）等手机直出编码，直接引用原片会在时间线显示
+  「媒体格式不支持」。工程素材必须用压缩后的 **H.264** 文件。
+
+## 六、依赖与环境
 
 - ffmpeg/ffprobe：默认 `/Applications/Televzr.app/Contents/Resources/bin_mac_x64/{ffmpeg,ffprobe}`（含 libass/libx264），可用 `KOUBO_FFMPEG`/`KOUBO_FFPROBE` 覆盖。
 - faster-whisper：small 模型 `~/.cache/faster-whisper/small`，用带 faster-whisper 的 Python（如 Codex bundled python）运行。
