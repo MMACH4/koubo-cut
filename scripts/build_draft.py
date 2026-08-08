@@ -27,8 +27,8 @@ sys.path.insert(0, os.path.join(SKILL_ROOT, "scripts"))
 sys.path.insert(0, os.path.join(SKILL_ROOT, "scripts", "vendor"))
 
 from pyJianYingDraft import (  # noqa: E402
-    ClipSettings, FontType, Keyframe as KF, KeyframeProperty as KP,
-    TextBorder, TextShadow, TextStyle,
+    ClipSettings, FilterType, FontType, Keyframe as KF, KeyframeProperty as KP,
+    TextBorder, TextShadow, TextStyle, Timerange, TrackType,
 )
 from jy_wrapper import JyProject  # noqa: E402
 
@@ -80,22 +80,25 @@ def split_sub(text: str, max_len: int, keep: str = None) -> list:
 
 
 def add_hua(project, text, highlights, start, end, size, y):
+    # 统一字号：去掉 highlight 里的 size 覆盖，避免同一行文字大小不一/变形
+    hl = [{k: v for k, v in h.items() if k != "size"} for h in highlights]
     seg = project.add_rich_text(
-        text, highlights=highlights,
+        text, highlights=hl,
         start_time=us(start), duration=us(end - start), track_name="HuaZi",
         style=TextStyle(size=size, color=GOLD, bold=True, align=1, auto_wrapping=True, max_line_width=0.8),
-        font=FontType.三极极宋超粗, border=None,
-        shadow=TextShadow(color=(0, 0, 0), alpha=1.0, diffuse=30, distance=4, angle=-45),
+        font=FontType.三极极宋超粗,
+        border=TextBorder(color=(0, 0, 0), alpha=1.0, width=46),
+        shadow=TextShadow(color=(0, 0, 0), alpha=0.9, diffuse=40, distance=6, angle=-45),
         clip_settings=ClipSettings(transform_y=y),
     )
     if seg is None:
         return
     seg.add_keyframe(KP.alpha, 0, 0.0)
-    seg.add_keyframe(KP.alpha, us(0.15), 1.0, **KF.EASE_OUT)
-    for t, v in ((0, 1.6), (0.35, 0.95), (0.55, 1.02), (0.75, 1.0)):
+    seg.add_keyframe(KP.alpha, us(0.12), 1.0, **KF.EASE_OUT)
+    for t, v in ((0, 1.9), (0.3, 0.92), (0.5, 1.05), (0.7, 1.0)):
         seg.add_keyframe(KP.uniform_scale, us(t), v, **KF.EASE_OUT)
-    seg.add_keyframe(KP.rotation, 0, -5, **KF.EASE_OUT)
-    seg.add_keyframe(KP.rotation, us(0.5), 0, **KF.EASE_OUT)
+    seg.add_keyframe(KP.rotation, 0, -6, **KF.EASE_OUT)
+    seg.add_keyframe(KP.rotation, us(0.45), 0, **KF.EASE_OUT)
 
 
 def add_title(project, text, start, end, size, y):
@@ -155,6 +158,9 @@ def main() -> int:
             video_segs.append({"start": t, "end": t + dur})
         t += dur
     print(f"video segments: {len(video_segs)} total {t:.2f}s")
+    # 固定滤镜（亮肤，综艺感提亮；剪映打开时联网加载，可手动调强度）
+    project.script.add_track(TrackType.filter, "滤镜")
+    project.script.add_filter(FilterType.亮肤, Timerange(0, us(t)), intensity=45)
 
     # 2. 字幕（拆段 + 重点高亮）
     sub_size, sub_y = (8.5, -0.536) if vertical else (6.5, -0.8)
