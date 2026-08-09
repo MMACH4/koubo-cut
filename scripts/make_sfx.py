@@ -26,6 +26,24 @@ SFX = {
     "boom.wav": [
         "-f", "lavfi", "-i", "aevalsrc='0.9*sin(2*PI*95*t)*exp(-9*t)+0.4*sin(2*PI*50*t)*exp(-7*t)':duration=0.7:sample_rate=48000",
     ],
+    "dong.wav": [  # 综艺-咚：低音短促重音
+        "-f", "lavfi", "-i", "aevalsrc='0.9*sin(2*PI*140*t)*exp(-12*t)+0.4*sin(2*PI*70*t)*exp(-9*t)':duration=0.5:sample_rate=48000",
+    ],
+    "dong2.wav": [  # 综艺-咚咚：双连咚
+        "-f", "lavfi", "-i", "aevalsrc='0.8*sin(2*PI*150*t)*exp(-14*t)+0.8*sin(2*PI*150*max(t-0.18,0))*exp(-14*max(t-0.18,0))*gt(t,0.18)':duration=0.6:sample_rate=48000",
+    ],
+    "tom.wav": [  # tom鼓：音高下滑的鼓点
+        "-f", "lavfi", "-i", "aevalsrc='0.8*sin(2*PI*(110-50*t)*t)*exp(-9*t)+0.3*sin(2*PI*55*t)*exp(-8*t)':duration=0.55:sample_rate=48000",
+    ],
+    "sparkle.wav": [  # 仙尘音效：高音闪烁
+        "-f", "lavfi", "-i", "aevalsrc='0.4*sin(2*PI*1200*t)*exp(-6*t)+0.3*sin(2*PI*1800*t)*exp(-7*t)+0.2*sin(2*PI*2400*t)*exp(-8*t)':duration=0.8:sample_rate=48000",
+    ],
+    "bo.wav": [  # 啵：清脆短弹
+        "-f", "lavfi", "-i", "aevalsrc='0.8*sin(2*PI*700*t)*exp(-40*t)':duration=0.15:sample_rate=48000",
+    ],
+    "fart.wav": [  # 噗，短放屁声：低频抖动喜剧音
+        "-f", "lavfi", "-i", "aevalsrc='0.6*sin(2*PI*(60+40*sin(2*PI*8*t))*t)*exp(-4*t)':duration=0.7:sample_rate=48000",
+    ],
 }
 
 
