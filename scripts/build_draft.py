@@ -253,7 +253,7 @@ def main() -> int:
     for i, ttl in enumerate(plan.get("titles", [])):
         add_title(project, ttl["text"], ttl["start"], ttl["end"], title_size, title_y)
         sfx_plan.append((ttl["start"], "whoosh.wav" if i % 2 == 0 else "tom.wav", 0.55))
-    hua_sfx = ["dong2.wav", "bo.wav", "dong.wav"]
+    hua_sfx = ["dong2.wav", "magic.wav", "bo.wav", "dong.wav"]
     for i, hua in enumerate(plan.get("huas", [])):
         hl = [{"word": x["word"], "color": COLORS.get(x.get("color", "red"), RED),
                "bold": True, "size": hua.get("size", def_hua_size) + 1.5} for x in hua["highlights"]]
