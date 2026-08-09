@@ -44,6 +44,9 @@ SFX = {
     "fart.wav": [  # 噗，短放屁声：低频抖动喜剧音
         "-f", "lavfi", "-i", "aevalsrc='0.6*sin(2*PI*(60+40*sin(2*PI*8*t))*t)*exp(-4*t)':duration=0.7:sample_rate=48000",
     ],
+    "magic.wav": [  # 魔法音效：上行滑音 + 闪烁
+        "-f", "lavfi", "-i", "aevalsrc='0.35*sin(2*PI*(700+500*t)*t)*exp(-3.5*t)+0.25*sin(2*PI*1800*t)*exp(-6*t)+0.15*sin(2*PI*2600*t)*exp(-8*t)':duration=0.7:sample_rate=48000",
+    ],
 }
 
 
