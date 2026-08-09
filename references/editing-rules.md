@@ -24,6 +24,11 @@
   - 花字 → dong2（咚咚）/ bo（啵）/ dong（咚）轮换
   - 重点字幕 → sparkle（仙尘感）/ ding 轮换
   - 尴尬/自嘲时刻 → fart（噗，短放屁声），agent 在 plan.farts 里指定时刻
+  - **搞笑时刻 → 笑声音效**（用户音效库 `assets/sounds/user-favorite-1.mp3`，
+    或剪映云笑声），agent 在 plan.sounds 里指定 `{"time", "file"}`
+- **用户常用音效**：用户会把常用音效放在剪映工程主轨道下方轨道、时间线最末尾；
+  新下载的音效文件出现在 `Cache/music/*.mp3`（按 mtime 识别），复制进
+  `assets/sounds/` 命名 `user-favorite-N.mp3`，plan.sounds 按文件名引用。
 - **结构词（用户文案结构词）**：识别到「环境板块」「内容板块」「客群板块」时，
   固定加特效：字幕放大（比重点再 +2.5 号）、关键词金色高亮、1.25 倍弹跳，
   音效用 sparkle（仙尘音效）。视频里说「先说环境啊/最后就是客群了」等变体时同样处理。
