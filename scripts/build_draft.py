@@ -144,6 +144,11 @@ def main() -> int:
     for name in os.listdir(sfx_dir):
         if name.endswith(".wav"):
             shutil.copy(os.path.join(sfx_dir, name), os.path.join(local_sfx, name))
+    # 用户常用音效库（技能 assets/sounds，含用户自选的笑声等）
+    user_sounds = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "sounds")
+    if os.path.isdir(user_sounds):
+        for name in os.listdir(user_sounds):
+            shutil.copy(os.path.join(user_sounds, name), os.path.join(local_sfx, name))
 
     # 1. 主视频：按剪辑点切段（每段独立出入点）
     segs = plan["segments"]
@@ -260,6 +265,8 @@ def main() -> int:
         sfx_plan.append((ts, "sparkle.wav", 0.7))
     for ts in plan.get("farts", []):
         sfx_plan.append((ts, "fart.wav", 0.6))
+    for item in plan.get("sounds", []):  # 用户指定音效（如笑声）：{"time": t, "file": "user-favorite-1.mp3"}
+        sfx_plan.append((item["time"], item["file"], item.get("vol", 0.7)))
 
     # 4. 音效
     for ts, name, vol in sorted(sfx_plan):
