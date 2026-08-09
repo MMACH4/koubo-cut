@@ -170,7 +170,7 @@ def main() -> int:
 
     # 2. 字幕（拆段 + 重点高亮）
     sub_size, sub_y = (8.5, -0.536) if vertical else (6.5, -0.8)
-    emph_size, max_len = (9.5, 12) if vertical else (7.5, 15)
+    emph_size, max_len = (9.5, 10) if vertical else (7.5, 10)
     sub_shadow = TextShadow(color=(0, 0, 0), alpha=1.0, diffuse=50, distance=3, angle=-45)
     sub_clip = ClipSettings(transform_y=sub_y)
     emph_map = plan.get("emphases") or []
