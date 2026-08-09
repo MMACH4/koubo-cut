@@ -167,6 +167,20 @@ def main() -> int:
     # 固定滤镜（亮肤，综艺感提亮；剪映打开时联网加载，可手动调强度）
     project.script.add_track(TrackType.filter, "滤镜")
     project.script.add_filter(FilterType.亮肤, Timerange(0, us(t)), intensity=45)
+    # BGM（用户三选一：MACH超级困 / 玩家录·活动发布 / 反骨男孩；默认 -17dB≈0.14）
+    bgm_name = plan.get("bgm")
+    if bgm_name:
+        bgm_dir = os.path.join(assets_dir, "bgm")
+        os.makedirs(bgm_dir, exist_ok=True)
+        bgm_src = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                               "assets", "bgm", bgm_name)
+        if os.path.exists(bgm_src):
+            shutil.copy(bgm_src, os.path.join(bgm_dir, bgm_name))
+            bgm_seg = project.add_media_safe(os.path.join(bgm_dir, bgm_name),
+                                             start_time=0, duration=us(t), track_name="BGM")
+            if bgm_seg is not None:
+                bgm_seg.volume = plan.get("bgm_vol", 0.14)  # -17dB
+            print(f"bgm: {bgm_name} vol={plan.get('bgm_vol', 0.14)}")
 
     # 2. 字幕（拆段 + 重点高亮）
     sub_size, sub_y = (8.5, -0.536) if vertical else (6.5, -0.8)
