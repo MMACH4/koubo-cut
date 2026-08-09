@@ -192,8 +192,28 @@ def main() -> int:
     # 花字出现时隐藏重叠的常规字幕
     entries = [e for e in entries if not any(_overlap((e["start"], e["end"]), w) for w in hua_windows)]
     emph_times = []
+    structure_words = plan.get("structure_words") or []
+    structure_times = []
     for e in entries:
-        if e["emph"]:
+        sw = next((w for w in structure_words if w in e["text"]), None)
+        if sw:
+            # 结构词（环境/内容/客群板块）：特效强调 + 放大字体 + 仙尘音效
+            seg = project.add_rich_text(
+                e["text"], highlights=[
+                    {"word": e["text"], "color": WHITE},
+                    {"word": sw, "color": GOLD, "bold": True, "size": emph_size + 2.5},
+                ],
+                start_time=us(e["start"]), duration=us(e["end"] - e["start"]),
+                track_name="Subtitles",
+                style=TextStyle(size=emph_size + 2.5, color=WHITE, bold=True, align=1,
+                                auto_wrapping=True, max_line_width=0.86),
+                font=FontType.三极极宋超粗, border=None, shadow=sub_shadow, clip_settings=sub_clip,
+            )
+            if seg is not None:
+                seg.add_keyframe(KP.uniform_scale, 0, 1.25, **KF.EASE_OUT)
+                seg.add_keyframe(KP.uniform_scale, us(0.4), 1.0, **KF.EASE_OUT)
+            structure_times.append(e["start"])
+        elif e["emph"]:
             color = COLORS.get(e["emph"]["color"], GOLD)
             seg = project.add_rich_text(
                 e["text"], highlights=[
@@ -225,16 +245,21 @@ def main() -> int:
     hua_y = -0.430 if vertical else -0.60  # 竖版 UI y=-826，比字幕高
     def_hua_size = 13.0 if vertical else 10.0
     sfx_plan = []
-    for ttl in plan.get("titles", []):
+    for i, ttl in enumerate(plan.get("titles", [])):
         add_title(project, ttl["text"], ttl["start"], ttl["end"], title_size, title_y)
-        sfx_plan.append((ttl["start"], "whoosh.wav", 0.55))
+        sfx_plan.append((ttl["start"], "whoosh.wav" if i % 2 == 0 else "tom.wav", 0.55))
+    hua_sfx = ["dong2.wav", "bo.wav", "dong.wav"]
     for i, hua in enumerate(plan.get("huas", [])):
         hl = [{"word": x["word"], "color": COLORS.get(x.get("color", "red"), RED),
                "bold": True, "size": hua.get("size", def_hua_size) + 1.5} for x in hua["highlights"]]
         add_hua(project, hua["text"], hl, hua["start"], hua["end"], hua.get("size", def_hua_size), hua_y)
-        sfx_plan.append((hua["start"], "boom.wav" if i % 2 == 0 else "ding.wav", 0.7))
-    for ts in emph_times:
-        sfx_plan.append((ts, "ding.wav", 0.6))
+        sfx_plan.append((hua["start"], hua_sfx[i % len(hua_sfx)], 0.7))
+    for i, ts in enumerate(emph_times):
+        sfx_plan.append((ts, "sparkle.wav" if i % 2 == 0 else "ding.wav", 0.6))
+    for ts in structure_times:
+        sfx_plan.append((ts, "sparkle.wav", 0.7))
+    for ts in plan.get("farts", []):
+        sfx_plan.append((ts, "fart.wav", 0.6))
 
     # 4. 音效
     for ts, name, vol in sorted(sfx_plan):
