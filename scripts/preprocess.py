@@ -15,7 +15,7 @@ FFPROBE = os.environ.get("KOUBO_FFPROBE", "/Applications/Televzr.app/Contents/Re
 
 def probe(path: str) -> dict:
     cmd = [FFPROBE, "-v", "error", "-show_entries",
-           "format=duration:stream=width,height,r_frame_rate",
+           "format=duration:stream=codec_type,width,height,r_frame_rate,rotation",
            "-of", "json", path]
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode != 0:
@@ -23,6 +23,13 @@ def probe(path: str) -> dict:
     import json
     d = json.loads(r.stdout)
     v = next((s for s in d.get("streams", []) if s.get("codec_type") == "video"), {})
+    # 手机竖拍常带旋转元数据：旋转 ±90° 时实际显示尺寸是宽高互换
+    try:
+        rot = int(v.get("rotation", 0) or 0) % 360
+    except (TypeError, ValueError):
+        rot = 0
+    if rot in (90, 270):
+        v["width"], v["height"] = v["height"], v["width"]
     fps_s = v.get("r_frame_rate", "25/1")
     try:
         num, den = fps_s.split("/")
